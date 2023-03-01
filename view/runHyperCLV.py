@@ -17,7 +17,14 @@ from core.model.Envelope import Envelope
 #
 # This prepares airborne hyperspectral data.
 #
-# agb/view/runHyper.py -o /explore/nobackup/people/rlgill/SystemTesting/testAGB -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2017
+# agb/view/runHyperCLV.py -o /explore/nobackup/people/rlgill/SystemTesting/testAGB2 -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2017
+#
+# ------------------ 13km Box ------------------
+# MLBS center:  (542067.6, 4136943) (easting, northing)
+# ul = (542067.6 - 6500, 4136943 + 6500) = (535567.6, 4143443)
+# lr = (542067.6 + 6500, 4136943 - 6500) = (548567.6, 4130443)
+#
+# agb/view/runHyperCLV.py -o /explore/nobackup/people/rlgill/SystemTesting/testAGB2 -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2017 -e 535567.6 4143443 548567.6 4130443 32617
 # -----------------------------------------------------------------------------
 def main():
 
@@ -30,10 +37,10 @@ def main():
                         required=True,
                         help='Path to CSV site file')
 
-    group.add_argument('-e',
-                       nargs=5,
-                       required=False,
-                       help='ulx uly lrx lry epsg-code')
+    parser.add_argument('-e',
+                        nargs=5,
+                        required=False,
+                        help='ulx uly lrx lry epsg-code')
 
     parser.add_argument('-o',
                         type=pathlib.Path,

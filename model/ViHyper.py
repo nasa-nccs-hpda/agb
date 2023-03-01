@@ -447,7 +447,7 @@ class ViHyper(object):
             self._image.getDataset().RasterXSize,
             numBands,
             gdal.GDT_Float32,
-            options=['COMPRESS=LZW'])
+            options=['COMPRESS=LZW', 'BIGTIFF=YES'])
             
         outDs.SetSpatialRef(self._image.srs())
         outDs.SetGeoTransform(self._image.getDataset().GetGeoTransform())
