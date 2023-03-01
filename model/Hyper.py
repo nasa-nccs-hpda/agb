@@ -358,7 +358,9 @@ class Hyper(BaseProcess):
 
             minX, minY = [int(n) for n in f.stem.split('_')[5:7]]
             inBox = box(minX, minY, minX+1000, minY+1000)
-            if envBox.intersects(inBox): filtered.append(f)
+
+            if envBox.intersects(inBox):
+                filtered.append(f)
 
         return filtered
 

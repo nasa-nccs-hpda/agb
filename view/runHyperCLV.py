@@ -5,6 +5,7 @@ import logging
 import pathlib
 import sys
 
+from osgeo import osr
 from osgeo.osr import SpatialReference
 
 from agb.model.Hyper import Hyper
@@ -72,7 +73,7 @@ def main():
     # Instantiate an envelope.
     # ---
     env = None
-    
+
     if args.e:
 
         epsgCode = int(args.e[4])
