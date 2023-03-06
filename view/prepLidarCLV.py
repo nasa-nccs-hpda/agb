@@ -91,7 +91,7 @@ def main():
     logger.info('Searching for ' + dataType.name() + ' files.')
     files = dataType.findFiles(args.i, site)
 
-    logger.info('Found ' + str(len(files)) + ' ' + dataType.name() + \
+    logger.info('Found ' + str(len(files)) + ' ' + dataType.name() +
         ' files.')
 
     # ---

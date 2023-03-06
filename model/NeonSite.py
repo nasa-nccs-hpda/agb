@@ -26,41 +26,41 @@ class NeonSite(object):
     # abbreviation
     # -------------------------------------------------------------------------
     @property
-    def abbreviation(self):
+    def abbreviation(self) -> str:
         return self._abbreviation
 
     # -------------------------------------------------------------------------
     # abbreviation Setter
     # -------------------------------------------------------------------------
     @abbreviation.setter
-    def abbreviation(self, value):
+    def abbreviation(self, value: str) -> None:
         self._abbreviation = value
 
     # -------------------------------------------------------------------------
     # name
     # -------------------------------------------------------------------------
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     # -------------------------------------------------------------------------
     # name Setter
     # -------------------------------------------------------------------------
     @name.setter
-    def name(self, value):
+    def name(self, value: str) -> None:
         self._name = value
 
     # -------------------------------------------------------------------------
     # center
     # -------------------------------------------------------------------------
     @property
-    def center(self):
+    def center(self) -> ogr.Geometry:
         return self._center
 
     # -------------------------------------------------------------------------
     # setCenter
     # -------------------------------------------------------------------------
-    def setCenter(self, utmX: float, utmY: float, epsg: int):
+    def setCenter(self, utmX: float, utmY: float, epsg: int) -> None:
 
         self._center = None
 
@@ -80,14 +80,14 @@ class NeonSite(object):
     # envelope
     # -------------------------------------------------------------------------
     @property
-    def envelope(self):
+    def envelope(self) -> Envelope:
         return self._envelope
 
     # -------------------------------------------------------------------------
     # setEnvelope
     # -------------------------------------------------------------------------
     def setEnvelope(self, llx: float, lly: float, urx: float, ury: float,
-                    epsg: int):
+                    epsg: int) -> None:
 
         self._envelope = None
 
@@ -101,7 +101,7 @@ class NeonSite(object):
     # -------------------------------------------------------------------------
     # fromCSV
     # -------------------------------------------------------------------------
-    def fromCSV(self, siteCsvFileName, siteAbbreviation):
+    def fromCSV(self, siteCsvFileName: Path, siteAbbreviation: str) -> None:
 
         with open(siteCsvFileName) as csvFile:
 
@@ -121,7 +121,7 @@ class NeonSite(object):
     # -------------------------------------------------------------------------
     # readRow
     # -------------------------------------------------------------------------
-    def _readRow(self, row) -> None:
+    def _readRow(self, row: str) -> None:
 
         # Create the spatial reference for the envelope.
         zone = row[7][:-1]

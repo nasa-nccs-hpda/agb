@@ -91,7 +91,7 @@ class Lidar(BaseProcess):
         # filtered = [f for f in filtered if \
         #                 str(f).split('_')[-1] not in ['DSM.tif', 'DTM.tif']]
 
-        filtered = [f for f in filtered if \
+        filtered = [f for f in filtered if
             str(f).rsplit('_', maxsplit=1)[-1] not in ['DSM.tif', 'DTM.tif']]
 
         return filtered
@@ -101,4 +101,3 @@ class Lidar(BaseProcess):
     # -------------------------------------------------------------------------
     def _processName(self) -> str:
         return 'lidar'
-        

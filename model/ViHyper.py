@@ -153,7 +153,7 @@ class ViHyper(object):
         band = self._image.getDataset().ReadAsArray(band_list=[27]). \
                astype('float')
 
-        band[band==-9999] = numpy.nan
+        band[band == -9999] = numpy.nan
         return band
 
     # -------------------------------------------------------------------------
@@ -210,7 +210,7 @@ class ViHyper(object):
         b660 = self._getBand(660)
         b835 = self._getBand(835)
         denom = b835 + 6 * b660 - 7.5 * b485 + 1
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = 2.5 * (b835 - b660) / denom
         return vi
 
@@ -222,7 +222,7 @@ class ViHyper(object):
         b660 = self._getBand(660)
         b835 = self._getBand(835)
         denom = b835 + b660 + 1
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = 2.5 * (b835 - b660) / denom
         return vi
 
@@ -253,7 +253,7 @@ class ViHyper(object):
         cc = 0.6
         savi = self.computeSAVI()
         arg = (aa - savi) / bb
-        arg[arg<=0] = abs(numpy.finfo(numpy.float64).min)
+        arg[arg <= 0] = abs(numpy.finfo(numpy.float64).min)
         vi = -(1 / cc) * numpy.log(arg)
         return vi
 
@@ -267,7 +267,7 @@ class ViHyper(object):
         b754 = self._getBand(754)
 
         denom = b709 - b681
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = (b754 - b709) / denom
         return vi
 
@@ -278,7 +278,7 @@ class ViHyper(object):
 
         b819 = self._getBand(819)
         b1599 = self._getBand(1599)
-        b819[b819==0] = self._getMin(b819)
+        b819[b819 == 0] = self._getMin(b819)
         vi = b1599 / b819
         return vi
 
@@ -290,7 +290,7 @@ class ViHyper(object):
         b819 = self._getBand(819)
         b1649 = self._getBand(1649)
         denom = b819 + b1649
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = (b819 - b1649) / denom
         return vi
 
@@ -301,9 +301,9 @@ class ViHyper(object):
                     numerator: float,
                     array: numpy.ndarray) -> numpy.ndarray:
 
-        array[array==0] = self._getMin(array)  # 0 to very small for division
+        array[array == 0] = self._getMin(array)  # 0 to very small for div
         fraction = numerator / array
-        fraction[array<=0] = abs(self._getMin(fraction))  # >0 for log
+        fraction[array <= 0] = abs(self._getMin(fraction))  # >0 for log
         return numpy.log10(fraction)
 
     # -------------------------------------------------------------------------
@@ -320,7 +320,7 @@ class ViHyper(object):
         log2 = self._computeLog(1, b1680)
 
         denom = log1 + log2
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
 
         vi = (log1 - log2) / denom
 
@@ -340,7 +340,7 @@ class ViHyper(object):
         log2 = self._computeLog(1, b1680)
 
         denom = log1 + log2
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
 
         vi = (log1 - log2) / denom
 
@@ -354,7 +354,7 @@ class ViHyper(object):
         b660 = self._getBand(660)
         b835 = self._getBand(835)
         denom = b835 + b660
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = (b835 - b660) / denom
         return vi
 
@@ -366,7 +366,7 @@ class ViHyper(object):
         b858 = self._getBand(858)
         b1241 = self._getBand(1241)
         denom = b858 + b1241
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = (b858 - b1241) / denom
         return vi
 
@@ -378,7 +378,7 @@ class ViHyper(object):
         b645 = self._getBand(645)
         b858 = self._getBand(858)
         denom = (b858 + b645) * b858
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = (b858 - b645) / denom
         return vi
 
@@ -390,7 +390,7 @@ class ViHyper(object):
         b531 = self._getBand(531)
         b550 = self._getBand(550)
         denom = b531 + b550
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = (b531 - b550) / denom
         return vi
 
@@ -402,7 +402,7 @@ class ViHyper(object):
         b531 = self._getBand(531)
         b570 = self._getBand(570)
         denom = b531 + b570
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = (b531 - b570) / denom
         return vi
 
@@ -419,7 +419,7 @@ class ViHyper(object):
         b655 = self._getBand(655)
         b835 = self._getBand(835)
         denom = b835 + b655 + L
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = ((b835 - b655) / denom) * (1 + L)
         return vi
 
@@ -431,7 +431,7 @@ class ViHyper(object):
         b900 = self._getBand(900)
         b970 = self._getBand(970)
         denom = b970
-        denom[denom==0] = self._getMin(denom)
+        denom[denom == 0] = self._getMin(denom)
         vi = b900 / denom
         return vi
 
@@ -457,7 +457,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     def _getBand(self, bandNum: int) -> numpy.ndarray:
 
-        if not bandNum in self._bands:
+        if bandNum not in self._bands:
 
             bandIndex = self._bandIndicies[bandNum]
 
@@ -465,7 +465,7 @@ class ViHyper(object):
                    ReadAsArray(band_list=[bandIndex]).astype('float')
 
             bandDs = self._image.getDataset().GetRasterBand(bandIndex)
-            band[band==bandDs.GetNoDataValue()] = numpy.nan
+            band[band == bandDs.GetNoDataValue()] = numpy.nan
             scaleFactor = float(bandDs.GetMetadataItem('Scale factor'))
             self._bands[bandNum] = band / scaleFactor
 
@@ -502,7 +502,7 @@ class ViHyper(object):
             raise RuntimeError('Ensure ViHyper.computeAllAndWrite ' +
                                'created enough bands.')
 
-        vi[vi==numpy.nan] = -10001
+        vi[vi == numpy.nan] = -10001
         band.WriteArray(vi)
-        band.SetMetadata({'Index Name': suffix,})
+        band.SetMetadata({'Index Name': suffix})
         return bandNum

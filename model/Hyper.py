@@ -93,7 +93,7 @@ class Hyper(BaseProcess):
         combinedName = self._workDir / '05-hyper-albedo-clipped.tif'
         h5Ds = gdal.Open(str(h5Name), gdalconst.GA_Update)
 
-        combinedDs = gdal.GetDriverByName('GTiff').Create( \
+        combinedDs = gdal.GetDriverByName('GTiff').Create(
             str(combinedName),
             h5Ds.RasterXSize,
             h5Ds.RasterYSize,
@@ -161,7 +161,7 @@ class Hyper(BaseProcess):
                                      ext))
 
         filtered = \
-            filter(lambda f: f.stem.split('_')[0]==str(self._year),
+            filter(lambda f: f.stem.split('_')[0] == str(self._year),
                    files)
 
         return list(filtered)
@@ -314,7 +314,7 @@ class Hyper(BaseProcess):
             if tempTif.exists():
                 return str(tempTif)
 
-            outDs = gdal.GetDriverByName('GTiff').Create( \
+            outDs = gdal.GetDriverByName('GTiff').Create(
                 str(tempTif),
                 int(geoInfo.xMax-geoInfo.xMin),
                 int(geoInfo.yMax-geoInfo.yMin),

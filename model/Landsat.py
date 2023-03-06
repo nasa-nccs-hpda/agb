@@ -60,8 +60,8 @@ class Landsat(BaseProcess):
         searchDir = searchDir or self.defaultInputDir()
         files = list(searchDir.rglob('*.tif'))
 
-        filtered = [f for f in files if \
-            f.stem.split('-')[1] == '7_Most_Recent_Year_of_Fast_Loss']
+        filtered = [f for f in files if
+                f.stem.split('-')[1] == '7_Most_Recent_Year_of_Fast_Loss']
 
         return filtered
 

@@ -76,7 +76,9 @@ class BaseProcess(object):
     # -------------------------------------------------------------------------
     # reprojEnv
     # -------------------------------------------------------------------------
-    def _reprojEnv(self, srs: SpatialReference, envelope: Envelope) -> Envelope:
+    def _reprojEnv(self, 
+                   srs: SpatialReference, 
+                   envelope: Envelope) -> Envelope:
 
         env = envelope.Clone()
 
