@@ -63,7 +63,7 @@ class Hyper(BaseProcess):
 
         if not self._workDir.exists():
             os.mkdir(self._workDir)
-
+            
     # -------------------------------------------------------------------------
     # clipOne
     # -------------------------------------------------------------------------
@@ -422,7 +422,11 @@ class Hyper(BaseProcess):
         vi.computeAllAndWrite()
 
     # -------------------------------------------------------------------------
-    # processName
+    # getOutFileName
     # -------------------------------------------------------------------------
-    def _processName(self) -> str:
-        return 'hyper-' + str(self._year)
+    def _getOutFileName(self) -> str:
+
+        return self._site.abbreviation + \
+               '_' + str(self._year) + \
+               '_Hyperspectral_Indicies'
+               

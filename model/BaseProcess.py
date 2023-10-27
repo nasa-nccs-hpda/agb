@@ -33,7 +33,7 @@ class BaseProcess(object):
     # -------------------------------------------------------------------------
     def clip(self, inFiles: list, envelope: Envelope) -> None:
 
-        outFile = self._outDir / (self._processName() + '.tif')
+        outFile = self._outDir / (self._getOutFileName() + '.tif')
         self._logger.info('Clipping to ' + str(outFile))
 
         if outFile.exists():
@@ -68,9 +68,9 @@ class BaseProcess(object):
         raise NotImplementedError()
 
     # -------------------------------------------------------------------------
-    # processName
+    # getOutFileName
     # -------------------------------------------------------------------------
-    def _processName(self) -> str:
+    def _getOutFileName(self) -> str:
         raise NotImplementedError()
 
     # -------------------------------------------------------------------------

@@ -46,9 +46,9 @@ class Ssurgo(BaseProcess):
         return files
 
     # -------------------------------------------------------------------------
-    # processName
+    # getOutFileName
     # -------------------------------------------------------------------------
-    def _processName(self) -> str:
+    def _getOutFileName(self) -> str:
         return 'ssurgo'
 
     # -------------------------------------------------------------------------

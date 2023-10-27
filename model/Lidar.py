@@ -97,7 +97,7 @@ class Lidar(BaseProcess):
         return filtered
 
     # -------------------------------------------------------------------------
-    # processName
+    # getOutFileName
     # -------------------------------------------------------------------------
-    def _processName(self) -> str:
+    def _getOutFileName(self) -> str:
         return 'lidar'

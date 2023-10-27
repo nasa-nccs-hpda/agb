@@ -30,7 +30,9 @@ from core.model.Envelope import Envelope
 def main():
 
     # Process command-line args.
-    desc = 'Use this application to prepare data for the AGB project.'
+    desc = 'Use this application to prepare hyperspectral data for the ' + \
+           'AGB project.'
+           
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument('-c',

@@ -167,6 +167,19 @@ class ViHyper(object):
         return vi
 
     # -------------------------------------------------------------------------
+    # computeARI790
+    # -------------------------------------------------------------------------
+    def computeARI790(self) -> numpy.ndarray:
+        
+        b550 = self._getBand(550)
+        b700 = self._getBand(700)
+        b790 = self._getBand(790)
+        b550[b550 == 0] = self._getMin(b550)
+        b700[b700 == 0] = self._getMin(b700)
+        vi = (1 / b550 - 1 / b700) * b790
+        return vi
+        
+    # -------------------------------------------------------------------------
     # computeCAI
     # -------------------------------------------------------------------------
     def computeCAI(self) -> numpy.ndarray:
@@ -175,6 +188,16 @@ class ViHyper(object):
         b2109 = self._getBand(2109)
         b2206 = self._getBand(2206)
         vi = 0.5 * (b2019 + b2206) - b2109
+        return vi
+
+    # -------------------------------------------------------------------------
+    # computeCRI550
+    # -------------------------------------------------------------------------
+    def computeCRI550(self) -> numpy.ndarray:
+
+        b510 = self._getBand(510)
+        b550 = self._getBand(550)
+        vi = b510 - b550
         return vi
 
     # -------------------------------------------------------------------------
@@ -188,15 +211,31 @@ class ViHyper(object):
         return vi
 
     # -------------------------------------------------------------------------
-    # computeCRI550
+    # computeCRI790_1
     # -------------------------------------------------------------------------
-    def computeCRI550(self) -> numpy.ndarray:
-
-        b510 = self._getBand(510)
-        b550 = self._getBand(550)
-        vi = b510 - b550
+    def computeCRI790_1(self) -> numpy.ndarray:
+        
+        b515 = self._getBand(515)
+        b565 = self._getBand(565)
+        b790 = self._getBand(790)
+        b515[b515 == 0] = self._getMin(b515)
+        b565[b565 == 0] = self._getMin(b565)
+        vi = (1 / b515 - 1 / b565) * b790
         return vi
-
+        
+    # -------------------------------------------------------------------------
+    # computeCRI790_2
+    # -------------------------------------------------------------------------
+    def computeCRI790_2(self) -> numpy.ndarray:
+        
+        b515 = self._getBand(515)
+        b700 = self._getBand(700)
+        b790 = self._getBand(790)
+        b515[b515 == 0] = self._getMin(b515)
+        b700[b700 == 0] = self._getMin(b700)
+        vi = (1 / b515 - 1 / b700) * b790
+        return vi
+        
     # -------------------------------------------------------------------------
     # computeEVI
     #
