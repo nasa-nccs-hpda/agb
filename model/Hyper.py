@@ -195,9 +195,9 @@ class Hyper(BaseProcess):
         # indicies.  Find each wavelength in geoInfo, and save its band index.
         # Only read these bands below.
         # ---
-        soughtWLs = [485, 510, 531, 550, 570, 645, 655, 660, 681, 700, 709,
-                     754, 819, 835, 858, 900, 970, 1241, 1510, 1599, 1649,
-                     1680, 1754, 2019, 2109, 2206]
+        soughtWLs = [485, 510, 515, 531, 550, 565, 570, 645, 655, 660, 681,
+                     700, 709, 754, 790, 819, 835, 858, 900, 970, 1241, 1510,
+                     1599, 1649, 1680, 1754, 2019, 2109, 2206]
 
         bandIndicies = {}
 
