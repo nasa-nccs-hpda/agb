@@ -101,7 +101,6 @@ class Hyper(BaseProcess):
             gdal.GDT_Float32)
 
         combinedDs.SetSpatialRef(geoInfo.srs)
-        # combinedDs.SetGeoTransform(geoInfo.xform)
         combinedDs.SetGeoTransform(h5Ds.GetGeoTransform())
 
         # Add the h5 bands.
@@ -290,7 +289,7 @@ class Hyper(BaseProcess):
         return refl
 
     # -------------------------------------------------------------------------
-    # h5toVrt
+    # _h5ToTif
     # -------------------------------------------------------------------------
     def _h5ToTif(self, inFile: Path) -> str:
 

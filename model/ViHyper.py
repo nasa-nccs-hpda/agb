@@ -56,12 +56,16 @@ class ViHyper(object):
         # we must create the GDAL data set and specify the number of bands.
         # ---
         curBand = 0
-        numVIs = 21  # Be sure to update this as VIs are added below.
+        numVIs = 24  # Be sure to update this as VIs are added below.
         ds = self._createDs(numVIs)
 
         self._logger.info('Computing ARI')
         vi = self.computeARI()
         curBand = self._writeVi(vi, 'ARI', ds, curBand)
+
+        self._logger.info('Computing ARI790')
+        vi = self.computeARI790()
+        curBand = self._writeVi(vi, 'ARI790', ds, curBand)
 
         self._logger.info('Computing CAI')
         vi = self.computeCAI()
@@ -74,6 +78,14 @@ class ViHyper(object):
         self._logger.info('Computing CRI700')
         vi = self.computeCRI700()
         curBand = self._writeVi(vi, 'CRI700', ds, curBand)
+
+        self._logger.info('Computing CRI790_1')
+        vi = self.computeCRI790_1()
+        curBand = self._writeVi(vi, 'CRI790_1', ds, curBand)
+
+        self._logger.info('Computing CRI790_2')
+        vi = self.computeCRI790_2()
+        curBand = self._writeVi(vi, 'CRI790_2', ds, curBand)
 
         self._logger.info('Computing EVI')
         vi = self.computeEVI()

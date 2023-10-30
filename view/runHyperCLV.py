@@ -18,7 +18,7 @@ from core.model.Envelope import Envelope
 #
 # This prepares airborne hyperspectral data.
 #
-# agb/view/runHyperCLV.py -o /explore/nobackup/people/rlgill/SystemTesting/testAGB2 -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2017
+# agb/view/runHyperCLV.py -o /explore/nobackup/people/rlgill/SystemTesting/testAGB3 -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2017
 #
 # ------------------ 13km Box ------------------
 # MLBS center:  (542067.6, 4136943) (easting, northing)
