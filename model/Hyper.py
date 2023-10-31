@@ -318,7 +318,7 @@ class Hyper(BaseProcess):
                 int(geoInfo.xMax-geoInfo.xMin),
                 int(geoInfo.yMax-geoInfo.yMin),
                 len(bandIndicies),
-                gdal.GDT_Float32,
+                gdal.GDT_Int16,
                 options=['COMPRESS=LZW'])
 
             outDs.SetSpatialRef(geoInfo.srs)
