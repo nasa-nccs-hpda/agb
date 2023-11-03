@@ -256,7 +256,7 @@ class Hyper(BaseProcess):
         srs.ImportFromEPSG(int(epsg))
 
         wlDs = refl['Metadata']['Spectral_Data']['Wavelength']
-        # wavelengths = [wl for wl in wlDs]  Unnecessary?
+        wavelengths = [wl for wl in wlDs] 
 
         scaleFactor = refl['Reflectance_Data'].attrs['Scale_Factor']
         noDataValue = refl['Reflectance_Data'].attrs['Data_Ignore_Value']
@@ -301,7 +301,7 @@ class Hyper(BaseProcess):
 
         # These are the "subdatasets" to extract.
         bandIndicies = self._getBandIndicies(geoInfo)
-        subDataSets = ['Reflectance_Data']
+        subDataSets = ['Reflectance_Data']  # Always 1?
         tempTif = None
 
         for subDs in subDataSets:
@@ -313,29 +313,36 @@ class Hyper(BaseProcess):
             if tempTif.exists():
                 return str(tempTif)
 
+            # No compression because it caused larger files.
             outDs = gdal.GetDriverByName('GTiff').Create(
                 str(tempTif),
                 int(geoInfo.xMax-geoInfo.xMin),
                 int(geoInfo.yMax-geoInfo.yMin),
-                len(bandIndicies),
+                # len(bandIndicies),
+                ds.shape[2],  # Replaces len(bandIndicies)
                 gdal.GDT_Int16,
-                options=['COMPRESS=LZW'])
+                options=['BIGTIFF=YES'])
 
             outDs.SetSpatialRef(geoInfo.srs)
             outDs.SetGeoTransform(geoInfo.xform)
 
             outBandIndex = 0
 
-            for bi in bandIndicies:
-
+            # for bi in bandIndicies:
+            for i in range(ds.shape[2]):  # Replaces for bi in bandIndicies
+            
                 outBandIndex += 1
                 band = outDs.GetRasterBand(outBandIndex)
-                npPixels = ds[:, :, bi]
+                # npPixels = ds[:, :, bi]
+                npPixels = ds[:, :, i]
                 band.WriteArray(npPixels)
                 band.SetNoDataValue(geoInfo.noDataValue)
 
-                band.SetMetadata({'Wavelength': geoInfo.wavelengths[bi],
-                                  'Matched wavelength': bandIndicies[bi][0],
+                wl = geoInfo.wavelengths[i]
+                matchWl = bandIndicies[wl][0] if wl in bandIndicies else 'n/a'
+                
+                band.SetMetadata({'Wavelength': wl,
+                                  'Matched wavelength': matchWl,
                                   'Scale factor': geoInfo.scaleFactor})
 
                 band.FlushCache()

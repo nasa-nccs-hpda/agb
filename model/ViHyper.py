@@ -25,6 +25,7 @@ class ViHyper(object):
         self._outFileName = outFileName
         self._logger = logger
         self._image = airHyperImage
+        self._albedoBand = None
 
         # ---
         # Index the bands to their wavelengths.  This is how to find bands
@@ -35,11 +36,26 @@ class ViHyper(object):
 
         for i in range(1, numBands):
 
-            wl = int(self._image.getDataset().GetRasterBand(i). \
-                     GetMetadata()['Matched wavelength'])
+            band = self._image.getDataset().GetRasterBand(i)
+            
+            try:
+                
+                wl = int(band.GetMetadata()['Matched wavelength'])
+                self._bandIndicies[wl] = i
 
-            self._bandIndicies[wl] = i
-
+            except KeyError:
+                
+                # ---
+                # Some bands do not have this metadata.  Also, look for
+                # Albedo.
+                # ---
+                try:
+                    band.GetMetadata()['Name']
+                    self._albedoBand = band
+                
+                except KeyError:
+                    pass
+                
         # ---
         # As we read bands, save them here.  Some of them are used with
         # multiple VIs.
@@ -162,10 +178,11 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     def computeAlbedo(self):
 
-        band = self._image.getDataset().ReadAsArray(band_list=[27]). \
-               astype('float')
-
+        # band = self._image.getDataset().ReadAsArray(band_list=[27]). \
+        #        astype('float')
+        band = self._albedoBand.ReadAsArray().astype('float')
         band[band == -9999] = numpy.nan
+        
         return band
 
     # -------------------------------------------------------------------------
