@@ -10,6 +10,11 @@ from core.model.Envelope import Envelope
 
 # -----------------------------------------------------------------------------
 # class BaseProcess
+#
+# Originally, this set of AGB code was supposed to clip and reproject various
+# types of input data.  Only hyperspectral ended up being used.  Hyperspectral
+# has its own stack of four types of images.  In light of all this, the 
+# generalization of this base class is unnecessary.
 # -----------------------------------------------------------------------------
 class BaseProcess(object):
 

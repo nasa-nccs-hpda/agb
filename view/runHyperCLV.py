@@ -5,12 +5,8 @@ import logging
 import pathlib
 import sys
 
-from osgeo import osr
-from osgeo.osr import SpatialReference
-
 from agb.model.Hyper import Hyper
 from agb.model.NeonSite import NeonSite
-from core.model.Envelope import Envelope
 
 
 # -----------------------------------------------------------------------------
@@ -18,14 +14,13 @@ from core.model.Envelope import Envelope
 #
 # This prepares airborne hyperspectral data.
 #
-# agb/view/runHyperCLV.py -o /explore/nobackup/people/rlgill/SystemTesting/testAGB3 -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2017
+# agb/view/runHyperCLV.py -o /explore/nobackup/projects/ilab/projects/AGB -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2017 --subtiles 537000_4131000
 #
-# ------------------ 13km Box ------------------
-# MLBS center:  (542067.6, 4136943) (easting, northing)
-# ul = (542067.6 - 6500, 4136943 + 6500) = (535567.6, 4143443)
-# lr = (542067.6 + 6500, 4136943 - 6500) = (548567.6, 4130443)
+# agb/view/runHyperCLV.py -o /explore/nobackup/projects/ilab/projects/AGB -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS --tileFile /explore/nobackup/people/rlgill/SystemTesting/testAGB3/MLBS_subtile_list.txt -y 2017 
 #
-# agb/view/runHyperCLV.py -o /explore/nobackup/people/rlgill/SystemTesting/testAGB2 -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2017 -e 535567.6 4143443 548567.6 4130443 32617
+# singularity run -B /explore/nobackup/people,/explore/nobackup/projects,/css,/nfs4m,/tmp, /explore/nobackup/people/iluser/ilab_containers/agb_1.0.2.sif /usr/local/ilab/agb/view/runHyperCLV.py --help
+#
+# agb/view/runHyperCLV.py -o /explore/nobackup/people/rlgill/SystemTesting/testAGB3 -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2015 --subtiles 547000_4134000
 # -----------------------------------------------------------------------------
 def main():
 
@@ -39,11 +34,6 @@ def main():
                         type=pathlib.Path,
                         required=True,
                         help='Path to CSV site file')
-
-    parser.add_argument('-e',
-                        nargs=5,
-                        required=False,
-                        help='ulx uly lrx lry epsg-code')
 
     parser.add_argument('-o',
                         type=pathlib.Path,
@@ -60,6 +50,15 @@ def main():
                         required=True,
                         help='Year to process')
 
+    group = parser.add_mutually_exclusive_group()
+
+    group.add_argument('--subtiles',
+                       nargs='+',
+                       help='537000_4131000 537000_4132000 ...')
+
+    group.add_argument('--tileFile',
+                       help='Path to file of tile IDs')
+
     args = parser.parse_args()
 
     # ---
@@ -70,27 +69,6 @@ def main():
 
     if args.o and not args.o.is_dir():
         raise NotADirectoryError(args.o)
-
-    # ---
-    # Instantiate an envelope.
-    # ---
-    env = None
-
-    if args.e:
-
-        epsgCode = int(args.e[4])
-        srs = SpatialReference()
-        srs.ImportFromEPSG(epsgCode)
-
-        srs4326 = SpatialReference()
-        srs4326.ImportFromEPSG(4326)
-
-        if srs.IsSame(srs4326):
-            srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        env = Envelope()
-        env.addPoint(float(args.e[0]), float(args.e[1]), 0, srs)
-        env.addPoint(float(args.e[2]), float(args.e[3]), 0, srs)
 
     # ---
     # Instantiate a logger.
@@ -107,10 +85,19 @@ def main():
     site = NeonSite()
     site.fromCSV(args.c, args.s)
 
+    subtiles = args.subtiles
+    
+    if args.tileFile:
+        
+        with open(args.tileFile) as f:
+            lines = f.readlines()
+        
+        subtiles = [l.strip() for l in lines]
+        
     # ---
     # Run it.
     # ---
-    Hyper(site, args.o, logger, args.y).run(env)
+    Hyper(site, args.o, logger, args.y).run(subtiles)
 
 
 # -----------------------------------------------------------------------------

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from osgeo import gdal
 
-import numpy
+import numpy as np
 
 from core.model.GeospatialImageFile import GeospatialImageFile
 
@@ -19,20 +19,21 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     def __init__(self,
                  airHyperImage: GeospatialImageFile,
+                 albedo: np.array,
                  outFileName: Path,
                  logger: logging) -> None:
 
         self._outFileName = outFileName
         self._logger = logger
         self._image = airHyperImage
-        self._albedoBand = None
+        self._albedoBand = albedo
 
         # ---
         # Index the bands to their wavelengths.  This is how to find bands
         # later.
         # ---
         numBands = self._image.getDataset().RasterCount
-        self._bandIndicies = {}
+        self._bandIndices = {}
 
         for i in range(1, numBands):
 
@@ -40,18 +41,21 @@ class ViHyper(object):
             
             try:
                 
-                wl = int(band.GetMetadata()['Matched wavelength'])
-                self._bandIndicies[wl] = i
+                try:
 
+                    wl = int(band.GetMetadata()['Matched wavelength'])
+                    self._bandIndices[wl] = i
+
+                except ValueError:
+                    
+                    # Some bands do not match a wavelength, and have 'n/a'.
+                    pass
+                    
             except KeyError:
                 
-                # ---
-                # Some bands do not have this metadata.  Also, look for
-                # Albedo.
-                # ---
+                # Some bands do not have this metadata.
                 try:
                     band.GetMetadata()['Name']
-                    self._albedoBand = band
                 
                 except KeyError:
                     pass
@@ -178,17 +182,14 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     def computeAlbedo(self):
 
-        # band = self._image.getDataset().ReadAsArray(band_list=[27]). \
-        #        astype('float')
-        band = self._albedoBand.ReadAsArray().astype('float')
-        band[band == -9999] = numpy.nan
-        
+        band = self._albedoBand
+        band[band == -9999] = np.nan
         return band
 
     # -------------------------------------------------------------------------
     # computeARI
     # -------------------------------------------------------------------------
-    def computeARI(self) -> numpy.ndarray:
+    def computeARI(self) -> np.ndarray:
 
         b550 = self._getBand(550)
         b700 = self._getBand(700)
@@ -198,7 +199,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeARI790
     # -------------------------------------------------------------------------
-    def computeARI790(self) -> numpy.ndarray:
+    def computeARI790(self) -> np.ndarray:
         
         b550 = self._getBand(550)
         b700 = self._getBand(700)
@@ -211,7 +212,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeCAI
     # -------------------------------------------------------------------------
-    def computeCAI(self) -> numpy.ndarray:
+    def computeCAI(self) -> np.ndarray:
 
         b2019 = self._getBand(2019)
         b2109 = self._getBand(2109)
@@ -222,7 +223,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeCRI550
     # -------------------------------------------------------------------------
-    def computeCRI550(self) -> numpy.ndarray:
+    def computeCRI550(self) -> np.ndarray:
 
         b510 = self._getBand(510)
         b550 = self._getBand(550)
@@ -232,7 +233,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeCRI700
     # -------------------------------------------------------------------------
-    def computeCRI700(self) -> numpy.ndarray:
+    def computeCRI700(self) -> np.ndarray:
 
         b510 = self._getBand(510)
         b700 = self._getBand(700)
@@ -242,7 +243,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeCRI790_1
     # -------------------------------------------------------------------------
-    def computeCRI790_1(self) -> numpy.ndarray:
+    def computeCRI790_1(self) -> np.ndarray:
         
         b515 = self._getBand(515)
         b565 = self._getBand(565)
@@ -255,7 +256,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeCRI790_2
     # -------------------------------------------------------------------------
-    def computeCRI790_2(self) -> numpy.ndarray:
+    def computeCRI790_2(self) -> np.ndarray:
         
         b515 = self._getBand(515)
         b700 = self._getBand(700)
@@ -272,7 +273,7 @@ class ViHyper(object):
     #
     # b660 contains 463 zeros, causing division by zero.
     # -------------------------------------------------------------------------
-    def computeEVI(self) -> numpy.ndarray:
+    def computeEVI(self) -> np.ndarray:
 
         b485 = self._getBand(485)
         b660 = self._getBand(660)
@@ -285,7 +286,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeEVI2
     # -------------------------------------------------------------------------
-    def computeEVI2(self) -> numpy.ndarray:
+    def computeEVI2(self) -> np.ndarray:
 
         b660 = self._getBand(660)
         b835 = self._getBand(835)
@@ -299,13 +300,13 @@ class ViHyper(object):
     #
     # c*[1-a*exp(-b*LAI)] where a, b and c are set to 1, 0.4 and 1, respectively
     # -------------------------------------------------------------------------
-    def computeFPAR(self) -> numpy.ndarray:
+    def computeFPAR(self) -> np.ndarray:
 
         a = 1.0
         b = 0.4
         c = 1.0
         lai = self.computeLAI()
-        vi = c * (1 - a * numpy.exp(-b * lai))
+        vi = c * (1 - a * np.exp(-b * lai))
         return vi
 
     # -------------------------------------------------------------------------
@@ -314,21 +315,21 @@ class ViHyper(object):
     # -(1/c)ln[(a - SAVI)/b] where a, b and c are set to 0.82, 0.78 and 0.6,
     # respectively
     # -------------------------------------------------------------------------
-    def computeLAI(self) -> numpy.ndarray:
+    def computeLAI(self) -> np.ndarray:
 
         aa = 0.82
         bb = 0.78
         cc = 0.6
         savi = self.computeSAVI()
         arg = (aa - savi) / bb
-        arg[arg <= 0] = abs(numpy.finfo(numpy.float64).min)
-        vi = -(1 / cc) * numpy.log(arg)
+        arg[arg <= 0] = abs(np.finfo(np.float64).min)
+        vi = -(1 / cc) * np.log(arg)
         return vi
 
     # -------------------------------------------------------------------------
     # computeMCTI
     # -------------------------------------------------------------------------
-    def computeMCTI(self) -> numpy.ndarray:
+    def computeMCTI(self) -> np.ndarray:
 
         b681 = self._getBand(681)
         b709 = self._getBand(709)
@@ -342,7 +343,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeMSI
     # -------------------------------------------------------------------------
-    def computeMSI(self) -> numpy.ndarray:
+    def computeMSI(self) -> np.ndarray:
 
         b819 = self._getBand(819)
         b1599 = self._getBand(1599)
@@ -353,7 +354,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeNDII
     # -------------------------------------------------------------------------
-    def computeNDII(self) -> numpy.ndarray:
+    def computeNDII(self) -> np.ndarray:
 
         b819 = self._getBand(819)
         b1649 = self._getBand(1649)
@@ -367,19 +368,19 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     def _computeLog(self,
                     numerator: float,
-                    array: numpy.ndarray) -> numpy.ndarray:
+                    array: np.ndarray) -> np.ndarray:
 
         array[array == 0] = self._getMin(array)  # 0 to very small for div
         fraction = numerator / array
         fraction[array <= 0] = abs(self._getMin(fraction))  # >0 for log
-        return numpy.log10(fraction)
+        return np.log10(fraction)
 
     # -------------------------------------------------------------------------
     # computeNDLI
     #
     # [log(1/1754) - log(1/1680)]/[log(1/1754) + log(1/1680)]
     # -------------------------------------------------------------------------
-    def computeNDLI(self) -> numpy.ndarray:
+    def computeNDLI(self) -> np.ndarray:
 
         b1680 = self._getBand(1680)
         b1754 = self._getBand(1754)
@@ -399,7 +400,7 @@ class ViHyper(object):
     #
     # [log(1/1510) - log(1/1680)]/[log(1/1510) + log(1/1680)]
     # -------------------------------------------------------------------------
-    def computeNDNI(self) -> numpy.ndarray:
+    def computeNDNI(self) -> np.ndarray:
 
         b1510 = self._getBand(1510)
         b1680 = self._getBand(1680)
@@ -417,7 +418,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeNDVI
     # -------------------------------------------------------------------------
-    def computeNDVI(self) -> numpy.ndarray:
+    def computeNDVI(self) -> np.ndarray:
 
         b660 = self._getBand(660)
         b835 = self._getBand(835)
@@ -429,7 +430,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeNDWI
     # -------------------------------------------------------------------------
-    def computeNDWI(self) -> numpy.ndarray:
+    def computeNDWI(self) -> np.ndarray:
 
         b858 = self._getBand(858)
         b1241 = self._getBand(1241)
@@ -441,7 +442,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeNIRv
     # -------------------------------------------------------------------------
-    def computeNIRv(self) -> numpy.ndarray:
+    def computeNIRv(self) -> np.ndarray:
 
         b645 = self._getBand(645)
         b858 = self._getBand(858)
@@ -453,7 +454,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computePRIn
     # -------------------------------------------------------------------------
-    def computePRIn(self) -> numpy.ndarray:
+    def computePRIn(self) -> np.ndarray:
 
         b531 = self._getBand(531)
         b550 = self._getBand(550)
@@ -465,7 +466,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computePRIw
     # -------------------------------------------------------------------------
-    def computePRIw(self) -> numpy.ndarray:
+    def computePRIw(self) -> np.ndarray:
 
         b531 = self._getBand(531)
         b570 = self._getBand(570)
@@ -481,7 +482,7 @@ class ViHyper(object):
     # amount of green vegetation cover and is normally set to 0.5 as an
     # approximation
     # -------------------------------------------------------------------------
-    def computeSAVI(self) -> numpy.ndarray:
+    def computeSAVI(self) -> np.ndarray:
 
         L = 0.5
         b655 = self._getBand(655)
@@ -494,7 +495,7 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # computeWBI
     # -------------------------------------------------------------------------
-    def computeWBI(self) -> numpy.ndarray:
+    def computeWBI(self) -> np.ndarray:
 
         b900 = self._getBand(900)
         b970 = self._getBand(970)
@@ -523,17 +524,17 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # _getBand
     # -------------------------------------------------------------------------
-    def _getBand(self, bandNum: int) -> numpy.ndarray:
+    def _getBand(self, bandNum: int) -> np.ndarray:
 
         if bandNum not in self._bands:
 
-            bandIndex = self._bandIndicies[bandNum]
+            bandIndex = self._bandIndices[bandNum]
 
             band = self._image.getDataset(). \
                    ReadAsArray(band_list=[bandIndex]).astype('float')
 
             bandDs = self._image.getDataset().GetRasterBand(bandIndex)
-            band[band == bandDs.GetNoDataValue()] = numpy.nan
+            band[band == bandDs.GetNoDataValue()] = np.nan
             scaleFactor = float(bandDs.GetMetadataItem('Scale factor'))
             self._bands[bandNum] = band / scaleFactor
 
@@ -542,13 +543,13 @@ class ViHyper(object):
     # -------------------------------------------------------------------------
     # _getMin
     # -------------------------------------------------------------------------
-    def _getMin(self, array: numpy.ndarray):
+    def _getMin(self, array: np.ndarray):
 
-        if array.dtype == numpy.int16:
-            return numpy.iinfo(numpy.int16).min
+        if array.dtype == np.int16:
+            return np.iinfo(np.int16).min
 
-        elif array.dtype == numpy.float64:
-            return numpy.finfo(numpy.float64).min
+        elif array.dtype == np.float64:
+            return np.finfo(np.float64).min
 
         else:
             raise RuntimeError('Unexpected data type.')
@@ -557,7 +558,7 @@ class ViHyper(object):
     # _writeVi
     # -------------------------------------------------------------------------
     def _writeVi(self,
-                 vi: numpy.ndarray,
+                 vi: np.ndarray,
                  suffix: str,
                  ds: gdal.Dataset,
                  bandNum: int) -> int:
@@ -570,7 +571,7 @@ class ViHyper(object):
             raise RuntimeError('Ensure ViHyper.computeAllAndWrite ' +
                                'created enough bands.')
 
-        vi[vi == numpy.nan] = -10001
+        vi[vi == np.nan] = -10001
         band.WriteArray(vi)
         band.SetMetadata({'Index Name': suffix})
         return bandNum
