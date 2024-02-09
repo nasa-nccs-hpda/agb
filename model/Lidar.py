@@ -88,9 +88,6 @@ class Lidar(BaseProcess):
         filtered = [f for f in files if self._subsite in str(f)]
         filtered = [f for f in filtered if str(self._year) in str(f)]
 
-        # filtered = [f for f in filtered if \
-        #                 str(f).split('_')[-1] not in ['DSM.tif', 'DTM.tif']]
-
         filtered = [f for f in filtered if
             str(f).rsplit('_', maxsplit=1)[-1] not in ['DSM.tif', 'DTM.tif']]
 

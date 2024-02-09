@@ -13,16 +13,6 @@ from core.model.GeospatialImageFile import GeospatialImageFile
 class Landsat(BaseProcess):
 
     # -------------------------------------------------------------------------
-    # __init__
-    # -------------------------------------------------------------------------
-    # def __init__(self,
-    #              site: NeonSite,
-    #              outDir: Path,
-    #              logger: logging.RootLogger):
-    #
-    #     super(Landsat, self).__init__(site, outDir, logger)
-
-    # -------------------------------------------------------------------------
     # clip
     # -------------------------------------------------------------------------
     def _myClip(self,

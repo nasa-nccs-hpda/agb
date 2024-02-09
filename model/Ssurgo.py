@@ -1,30 +1,13 @@
 
-import logging
 from pathlib import Path
-import tempfile
-
-from osgeo import gdal
 
 from agb.model.BaseProcess import BaseProcess
-from agb.model.NeonSite import NeonSite
-from core.model.Envelope import Envelope
-from core.model.GeospatialImageFile import GeospatialImageFile
 
 
 # -----------------------------------------------------------------------------
 # class Ssurgo
 # -----------------------------------------------------------------------------
 class Ssurgo(BaseProcess):
-
-    # -------------------------------------------------------------------------
-    # __init__
-    # -------------------------------------------------------------------------
-    # def __init__(self,
-    #              site: NeonSite,
-    #              outDir: Path,
-    #              logger: logging.RootLogger):
-    #
-    #     super(Ssurgo, self).__init__(site, outDir, logger)
 
     # -------------------------------------------------------------------------
     # defaultInputDir

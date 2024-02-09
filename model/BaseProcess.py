@@ -1,4 +1,3 @@
-
 import logging
 from pathlib import Path
 
@@ -13,7 +12,7 @@ from core.model.Envelope import Envelope
 #
 # Originally, this set of AGB code was supposed to clip and reproject various
 # types of input data.  Only hyperspectral ended up being used.  Hyperspectral
-# has its own stack of four types of images.  In light of all this, the 
+# has its own stack of four types of images.  In light of all this, the
 # generalization of this base class is unnecessary.
 # -----------------------------------------------------------------------------
 class BaseProcess(object):
@@ -81,8 +80,8 @@ class BaseProcess(object):
     # -------------------------------------------------------------------------
     # reprojEnv
     # -------------------------------------------------------------------------
-    def _reprojEnv(self, 
-                   srs: SpatialReference, 
+    def _reprojEnv(self,
+                   srs: SpatialReference,
                    envelope: Envelope) -> Envelope:
 
         env = envelope.Clone()
