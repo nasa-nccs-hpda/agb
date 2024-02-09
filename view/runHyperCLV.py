@@ -11,14 +11,12 @@ from agb.model.NeonSite import NeonSite
 
 # -----------------------------------------------------------------------------
 # main
-#
+
 # This prepares airborne hyperspectral data.
 #
 # agb/view/runHyperCLV.py -o /explore/nobackup/projects/ilab/projects/AGB -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2017 --subtiles 537000_4131000
 #
 # agb/view/runHyperCLV.py -o /explore/nobackup/projects/ilab/projects/AGB -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS --tileFile /explore/nobackup/people/rlgill/SystemTesting/testAGB3/MLBS_subtile_list.txt -y 2017 
-#
-# singularity run -B /explore/nobackup/people,/explore/nobackup/projects,/css,/nfs4m,/tmp, /explore/nobackup/people/iluser/ilab_containers/agb_1.0.2.sif /usr/local/ilab/agb/view/runHyperCLV.py --help
 #
 # agb/view/runHyperCLV.py -o /explore/nobackup/people/rlgill/SystemTesting/testAGB3 -c /explore/nobackup/people/rlgill/innovation-lab-repositories/agb/model/tests/NeonSites.csv -s MLBS -y 2015 --subtiles 547000_4134000
 # -----------------------------------------------------------------------------

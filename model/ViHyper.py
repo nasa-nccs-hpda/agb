@@ -38,28 +38,28 @@ class ViHyper(object):
         for i in range(1, numBands):
 
             band = self._image.getDataset().GetRasterBand(i)
-            
+
             try:
-                
+
                 try:
 
                     wl = int(band.GetMetadata()['Matched wavelength'])
                     self._bandIndices[wl] = i
 
                 except ValueError:
-                    
+
                     # Some bands do not match a wavelength, and have 'n/a'.
                     pass
-                    
+
             except KeyError:
-                
+
                 # Some bands do not have this metadata.
                 try:
                     band.GetMetadata()['Name']
-                
+
                 except KeyError:
                     pass
-                
+
         # ---
         # As we read bands, save them here.  Some of them are used with
         # multiple VIs.
@@ -200,7 +200,7 @@ class ViHyper(object):
     # computeARI790
     # -------------------------------------------------------------------------
     def computeARI790(self) -> np.ndarray:
-        
+
         b550 = self._getBand(550)
         b700 = self._getBand(700)
         b790 = self._getBand(790)
@@ -208,7 +208,7 @@ class ViHyper(object):
         b700[b700 == 0] = self._getMin(b700)
         vi = (1 / b550 - 1 / b700) * b790
         return vi
-        
+
     # -------------------------------------------------------------------------
     # computeCAI
     # -------------------------------------------------------------------------
@@ -244,7 +244,7 @@ class ViHyper(object):
     # computeCRI790_1
     # -------------------------------------------------------------------------
     def computeCRI790_1(self) -> np.ndarray:
-        
+
         b515 = self._getBand(515)
         b565 = self._getBand(565)
         b790 = self._getBand(790)
@@ -252,12 +252,12 @@ class ViHyper(object):
         b565[b565 == 0] = self._getMin(b565)
         vi = (1 / b515 - 1 / b565) * b790
         return vi
-        
+
     # -------------------------------------------------------------------------
     # computeCRI790_2
     # -------------------------------------------------------------------------
     def computeCRI790_2(self) -> np.ndarray:
-        
+
         b515 = self._getBand(515)
         b700 = self._getBand(700)
         b790 = self._getBand(790)
@@ -265,7 +265,7 @@ class ViHyper(object):
         b700[b700 == 0] = self._getMin(b700)
         vi = (1 / b515 - 1 / b700) * b790
         return vi
-        
+
     # -------------------------------------------------------------------------
     # computeEVI
     #

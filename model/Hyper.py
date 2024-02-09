@@ -347,25 +347,6 @@ class Hyper(object):
         return filtered
 
     # -------------------------------------------------------------------------
-    # getAlbedos
-    # -------------------------------------------------------------------------
-    # def _getAlbedos(self) -> gdal.Dataset:
-    #
-    #     ALBEDO_DIR = self.defaultInputDir() / 'DP3.30011.001'
-    #     albedos = self.findFiles(ALBEDO_DIR, ext='tif')
-    #
-    #     # Remove files like 2017_NEON_D07_MLBS_DP3_Full_Albedo.
-    #     filtered = list(filter(lambda f: f.stem.split('_')[5] != 'Full',
-    #                            albedos))
-    #
-    #     self._logger.info('Found ' + str(len(filtered)) + ' Albedos.')
-    #     vrtName = self._workDir / '02-albedo.vrt'
-    #     filtered = [str(f) for f in filtered]
-    #     albedos = gdal.BuildVRT(str(vrtName), filtered)
-    #
-    #     return albedos
-
-    # -------------------------------------------------------------------------
     # getBandIndices
     # -------------------------------------------------------------------------
     def _getBandIndices(self, geoInfo: GeospatialInfo) -> dict:
@@ -443,8 +424,6 @@ class Hyper(object):
         srs.ImportFromEPSG(int(epsg))
 
         wlDs = refl['Metadata']['Spectral_Data']['Wavelength']
-        import pdb
-        pdb.set_trace()
         wavelengths = [wl for wl in wlDs] 
 
         scaleFactor = refl['Reflectance_Data'].attrs['Scale_Factor']
@@ -586,84 +565,6 @@ class Hyper(object):
             sgDs = None
 
         return reflName
-
-    # -------------------------------------------------------------------------
-    # intersectH5s
-    # -------------------------------------------------------------------------
-    # def _intersectH5s(self, inFiles: list, env: Envelope) -> list:
-    #
-    #     filtered = []
-    #     envBox = box(env.ulx(), env.lry(), env.lrx(), env.uly())
-    #
-    #     for f in inFiles:
-    #
-    #         minX, minY = [int(n) for n in f.stem.split('_')[5:7]]
-    #         inBox = box(minX, minY, minX+1000, minY+1000)
-    #
-    #         if envBox.intersects(inBox):
-    #             filtered.append(f)
-    #
-    #     return filtered
-
-    # -------------------------------------------------------------------------
-    # myClip
-    #-------------------------------------------------------------------------
-    # def _myClip(self,
-    #             inFiles: list,
-    #             envelope: Envelope,
-    #             outFile: Path) -> None:
-    #
-    #     self._logger.info('Reading H5 files.')
-    #     h5Tifs = []
-    #
-    #     for inFile in inFiles:
-    #
-    #         # *_reflectance.tif, *_savgol.tif
-    #         h5Tifs.append(self._h5ToTif(inFile))
-    #         self._createMetadataImage(inFile)
-    #
-    #     # ---
-    #     # VRTs cannot be created from these H5 files.  We must open them using
-    #     # H5 methods.
-    #     # ---
-    #     # self._logger.info('Reading H5 files.')
-    #     # h5Tifs = [self._h5ToTif(f) for f in filteredFiles]
-    #
-    #     # Mosaic the H5 files using a VRT.
-    #     self._logger.info('Mosaicking H5s.')
-    #     h5MosName = self._workDir / '01-hyper-mosaic.vrt'
-    #     h5TifsStr = [str(f) for f in filteredFiles]
-    #     h5Vrt = gdal.BuildVRT(str(h5MosName), h5TifsStr)
-    #
-    #     # Find and mosaic the Albedo files using a VRT.
-    #     self._logger.info('Mosaicking Albedos.')
-    #     albedoDs = self._getAlbedos()
-    #
-    #     # Clip H5s
-    #     self._logger.info('Clipping H5s.')
-    #     h5Name = self._workDir / '03-hyper-clipped.tif'
-    #     self._clipOne(h5Vrt, envelope, h5Name)
-    #
-    #     # Clip Albedo
-    #     self._logger.info('Clipping Albedos.')
-    #     albName = self._workDir / '04-albedo-clipped.tif'
-    #     self._clipOne(albedoDs, envelope, albName)
-    #
-    #     # ---
-    #     # Albedo are independent images, and completely overlap the h5s.  If
-    #     # they were added to the VRT, they would overwrite or be overwritten
-    #     # by the h5s.  Instead, create a vrt from the albedos, clip it, then
-    #     # add it as a band to the clipped h5s.
-    #     # ---
-    #     self._logger.info('Combining H5 bands and Albedo.')
-    #     geoInfo = self._getGeoInfo(filteredFiles[0])
-    #     combined = self._combine(h5Name, albName, geoInfo)
-    #
-    #     # Compute the VIs.
-    #     self._logger.info('Computing vegetation indices.')
-    #     gis = GeospatialImageFile(str(combined))
-    #     vi = ViHyper(gis, outFile, self._logger)
-    #     vi.computeAllAndWrite()
 
     # -------------------------------------------------------------------------
     # myClip
