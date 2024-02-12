@@ -13,3 +13,15 @@ The AGB application's original purpose was to collect and prepare imagery from a
 - You must also specify the year associated with the input files to run. 
 
 - To specify which tiles to run, it accepts a series of subtile coordinates or the same IDs in a file with one ID per line.  Refer to the command's help information.  
+
+## Tile File Example
+
+537000_4131000
+537000_4132000
+537000_4133000
+537000_4134000
+537000_4135000
+
+## Sample Command
+
+agb/view/runHyperCLV.py -o /path/to/AGB/output -c /path/to/NeonSites.csv -s MLBS -y 2017 --subtiles 537000_4131000 537000_4132000 537000_4133000 537000_4134000 537000_4135000
